@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="common_head">
+  <meta charset="UTF-8">
+  <title th:text="${title}">Product Manager</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f6f6f6; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #eee; }
+    a { text-decoration: none; color: blue; }
+    .menu { background: #333; padding: 10px; }
+    .menu a { color: white; margin-right: 15px; }
+    footer { text-align: center; margin-top: 20px; color: #777; }
+  </style>
+</head>
+
+<body>
+<div th:fragment="menu">
+  <div class="menu">
+    <a href="/products">Danh sách</a>
+    <a href="/products/create">Thêm mới</a>
+  </div>
+</div>
+
+<footer th:fragment="footer">
+  © 2025 Product Manager App - Powered by Spring MVC + Thymeleaf
+</footer>
+</body>
+</html>

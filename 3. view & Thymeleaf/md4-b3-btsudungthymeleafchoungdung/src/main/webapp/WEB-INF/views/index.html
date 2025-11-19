@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_head"></head>
+<body>
+<div th:replace="layout :: menu"></div>
+<h1>Danh sách sản phẩm</h1>
+
+<table>
+    <tr>
+        <th>ID</th><th>Tên</th><th>Giá</th><th>Hãng</th><th>Action</th>
+    </tr>
+    <tr th:each="p : ${products}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.price}"></td>
+        <td th:text="${p.manufacturer}"></td>
+        <td>
+            <a th:href="@{/products/view/{id}(id=${p.id})}">Xem</a> |
+            <a th:href="@{/products/update/{id}(id=${p.id})}">Sửa</a> |
+            <a th:href="@{/products/delete/{id}(id=${p.id})}">Xoá</a>
+        </td>
+    </tr>
+</table>
+
+<div th:replace="layout :: footer"></div>
+</body>
+</html>

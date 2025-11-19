@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_head"></head>
+<body>
+<div th:replace="layout :: menu"></div>
+
+<h1>Xoá sản phẩm</h1>
+<p>Bạn có chắc muốn xoá sản phẩm: <b th:text="${product.name}"></b>?</p>
+<form action="/products/delete" method="post">
+    <input type="hidden" th:name="id" th:value="${product.id}">
+    <button type="submit">Có, xoá</button>
+    <a href="/products">Không, quay lại</a>
+</form>
+
+<div th:replace="layout :: footer"></div>
+</body>
+</html>

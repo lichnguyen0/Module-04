@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_head"></head>
+<body>
+<div th:replace="layout :: menu"></div>
+
+<h1>Chi tiết sản phẩm</h1>
+<p>ID: <span th:text="${product.id}"></span></p>
+<p>Tên: <span th:text="${product.name}"></span></p>
+<p>Giá: <span th:text="${product.price}"></span></p>
+<p>Mô tả: <span th:text="${product.description}"></span></p>
+<p>Nhà sản xuất: <span th:text="${product.manufacturer}"></span></p>
+<a href="/products">Quay lại</a>
+
+<div th:replace="layout :: footer"></div>
+</body>
+</html>
