@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload bài hát</title>
+</head>
+<body>
+<h3>Upload bài hát</h3>
+
+<div th:if="${error}" style="color:red">
+  <p th:text="${error}"></p>
+</div>
+
+<form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+  <table>
+    <tr>
+      <td>Tên bài hát:</td>
+      <td><input type="text" name="title" /></td>
+    </tr>
+    <tr>
+      <td>Nghệ sĩ:</td>
+      <td><input type="text" name="artist" /></td>
+    </tr>
+    <tr>
+      <td>Thể loại:</td>
+      <td>
+        <textarea name="genresStr" rows="2" cols="30" placeholder="Nhập các thể loại, cách nhau dấu ,"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td>File nhạc:</td>
+      <td><input type="file" name="file" /></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Upload" /></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>
