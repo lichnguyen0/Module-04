@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Tờ khai y tế</title>
+  <style>
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    .required::after { content: " *"; color: red; }
+    .error { color: red; margin-bottom: 15px; padding: 10px; background: #ffe6e6; border: 1px solid red; }
+    .section { margin-bottom: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .checkbox-group { display: flex; gap: 20px; margin: 10px 0; }
+    .checkbox-item { display: flex; align-items: center; gap: 5px; }
+    .radio-group { display: flex; gap: 20px; margin: 10px 0; }
+    .radio-item { display: flex; align-items: center; gap: 5px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>TỜ KHAI Y TẾ</h1>
+  <p style="color: red; font-weight: bold;">ĐÂY LÀ TÀI LIỆU QUAN TRỌNG, THÔNG TIN CỦA ANH/CHỊ SẼ GIÚP CƠ QUAN Y TẾ</p>
+  <p style="color: orange;">Khuyến cáo: Khai báo thông tin sai là vi phạm pháp luật</p>
+
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+
+  <form th:action="@{/submit}" method="post" th:object="${declaration}">
+
+    <!-- Thông tin cá nhân -->
+    <div class="section">
+      <h3>Thông tin cá nhân</h3>
+
+      <div class="form-group">
+        <label class="required">Họ tên (ghi chữ IN HOA)</label>
+        <input type="text" th:field="*{fullName}" placeholder="NGUYỄN VĂN A" required>
+      </div>
+
+      <div style="display: flex; gap: 20px;">
+        <div class="form-group" style="flex: 1;">
+          <label class="required">Năm sinh</label>
+          <input type="number" th:field="*{yearOfBirth}" min="1900" max="2024" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label class="required">Giới tính</label>
+          <select th:field="*{gender}" required>
+            <option value="">-Chọn-</option>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+            <option value="Khác">Khác</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">Số hộ chiếu hoặc số CMND hoặc giấy thông hành hợp pháp khác</label>
+        <input type="text" th:field="*{passportNumber}" required>
+      </div>
+    </div>
+
+    <!-- Thông tin đi lại -->
+    <div class="section">
+      <h3>Thông tin đi lại</h3>
+
+      <div class="form-group">
+        <label class="required">Thông tin đi lại</label>
+        <div class="radio-group">
+          <div class="radio-item">
+            <input type="radio" th:field="*{transportType}" value="Tàu bay" id="plane">
+            <label for="plane">Tàu bay</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" th:field="*{transportType}" value="Tàu thuyền" id="ship">
+            <label for="ship">Tàu thuyền</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" th:field="*{transportType}" value="Ô tô" id="car">
+            <label for="car">Ô tô</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" th:field="*{transportType}" value="Khác" id="other">
+            <label for="other">Khác</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Số hiệu phương tiện</label>
+        <input type="text" th:field="*{transportNumber}" placeholder="VD: VN123">
+      </div>
+
+      <div class="form-group">
+        <label class="required">Ngày khởi hành</label>
+        <input type="text" th:field="*{departureDate}" placeholder="dd/mm/yyyy" required>
+      </div>
+    </div>
+
+    <!-- Địa chỉ liên lạc -->
+    <div class="section">
+      <h3>Địa chỉ liên lạc</h3>
+
+      <div class="form-group">
+        <label class="required">Trong vòng 14 ngày qua, Anh/Chị có đến tỉnh/thành phố nào?</label>
+        <textarea th:field="*{visitedCities}" rows="3" placeholder="Khai báo các tỉnh/thành phố đã đến trong 14 ngày qua..." required></textarea>
+      </div>
+
+      <div style="display: flex; gap: 20px;">
+        <div class="form-group" style="flex: 1;">
+          <label class="required">Tỉnh / thành</label>
+          <input type="text" th:field="*{province}" placeholder="Hà Nội" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label class="required">Quận / huyện</label>
+          <input type="text" th:field="*{district}" placeholder="Quận Cầu Giấy" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="required">Địa chỉ nơi ở</label>
+        <input type="text" th:field="*{address}" placeholder="Số nhà, đường, phường/xã..." required>
+      </div>
+
+      <div class="form-group">
+        <label class="required">Điện thoại</label>
+        <input type="tel" th:field="*{phone}" placeholder="0123456789" required>
+      </div>
+    </div>
+
+    <!-- Triệu chứng -->
+    <div class="section">
+      <h3>Triệu chứng và lịch sử phơi nhiễm</h3>
+
+      <div class="form-group">
+        <label>Trong vòng 14 ngày qua, Anh/Chị có thấy xuất hiện dấu hiệu nào sau đây không:</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{fever}" id="fever" value="true">
+            <label for="fever">Sốt</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{cough}" id="cough" value="true">
+            <label for="cough">Ho</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{shortnessOfBreath}" id="breath" value="true">
+            <label for="breath">Khó thở</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{soreThroat}" id="throat" value="true">
+            <label for="throat">Đau họng</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Lịch sử phơi nhiễm: Trong vòng 14 ngày qua, Anh/Chị có:</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{visitedAnimalFarm}" id="farm" value="true">
+            <label for="farm">Đến trang trại chăn nuôi / chợ buôn bán động vật sống</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" th:field="*{contactedCovidPatient}" id="contact" value="true">
+            <label for="contact">Tiếp xúc gần (&lt;2m) với người mắc bệnh viêm đường hô hấp do nCoV</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #e6f7ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <p><strong>Lưu ý:</strong> Dữ liệu bạn cung cấp hoàn toàn bảo mật và chỉ phục vụ cho việc phòng chống dịch</p>
+      <p>Khi bạn nhấn nút "Gửi" là bạn đã hiểu và đồng ý.</p>
+    </div>
+
+    <button type="submit" style="background: #007bff; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+      GỬI TỜ KHAI
+    </button>
+  </form>
+</div>
+</body>
+</html>

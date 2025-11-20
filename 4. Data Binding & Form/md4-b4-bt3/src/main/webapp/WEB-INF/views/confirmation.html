@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Xác nhận tờ khai</title>
+  <style>
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .success { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .info-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-right: 10px; }
+    .symptom-list { list-style: none; padding: 0; }
+    .symptom-list li { padding: 5px 0; }
+    .symptom-yes { color: green; }
+    .symptom-no { color: #666; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="success">
+    <h2>✅ GỬI TỜ KHAI THÀNH CÔNG!</h2>
+    <p>Cảm ơn bạn đã khai báo thông tin y tế.</p>
+  </div>
+
+  <div th:object="${declaration}">
+    <div class="info-section">
+      <h3>Thông tin cá nhân</h3>
+      <p><strong>Họ tên:</strong> <span th:text="*{fullName}"></span></p>
+      <p><strong>Năm sinh:</strong> <span th:text="*{yearOfBirth}"></span></p>
+      <p><strong>Giới tính:</strong> <span th:text="*{gender}"></span></p>
+      <p><strong>Số CMND/Passport:</strong> <span th:text="*{passportNumber}"></span></p>
+    </div>
+
+    <div class="info-section">
+      <h3>Thông tin đi lại</h3>
+      <p><strong>Phương tiện:</strong> <span th:text="*{transportType}"></span></p>
+      <p><strong>Số hiệu phương tiện:</strong> <span th:text="*{transportNumber} ?: 'Không có'"></span></p>
+      <p><strong>Ngày khởi hành:</strong> <span th:text="*{departureDate}"></span></p>
+    </div>
+
+    <div class="info-section">
+      <h3>Địa chỉ liên lạc</h3>
+      <p><strong>Đã đến:</strong> <span th:text="*{visitedCities}"></span></p>
+      <p><strong>Địa chỉ:</strong> <span th:text="*{address}"></span>, <span th:text="*{district}"></span>, <span th:text="*{province}"></span></p>
+      <p><strong>Điện thoại:</strong> <span th:text="*{phone}"></span></p>
+    </div>
+
+    <div class="info-section">
+      <h3>Triệu chứng và lịch sử phơi nhiễm</h3>
+      <ul class="symptom-list">
+        <li th:class="${declaration.fever} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Sốt:</strong> <span th:text="${declaration.fever} ? 'CÓ' : 'Không'"></span>
+        </li>
+        <li th:class="${declaration.cough} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Ho:</strong> <span th:text="${declaration.cough} ? 'CÓ' : 'Không'"></span>
+        </li>
+        <li th:class="${declaration.shortnessOfBreath} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Khó thở:</strong> <span th:text="${declaration.shortnessOfBreath} ? 'CÓ' : 'Không'"></span>
+        </li>
+        <li th:class="${declaration.soreThroat} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Đau họng:</strong> <span th:text="${declaration.soreThroat} ? 'CÓ' : 'Không'"></span>
+        </li>
+        <li th:class="${declaration.visitedAnimalFarm} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Đến trang trại/chợ động vật:</strong> <span th:text="${declaration.visitedAnimalFarm} ? 'CÓ' : 'Không'"></span>
+        </li>
+        <li th:class="${declaration.contactedCovidPatient} ? 'symptom-yes' : 'symptom-no'">
+          <strong>Tiếp xúc người nghi nhiễm:</strong> <span th:text="${declaration.contactedCovidPatient} ? 'CÓ' : 'Không'"></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <a th:href="@{/edit}" class="btn">📝 Sửa thông tin</a>
+    <a th:href="@{/}" class="btn">🏠 Khai báo mới</a>
+  </div>
+</div>
+</body>
+</html>
