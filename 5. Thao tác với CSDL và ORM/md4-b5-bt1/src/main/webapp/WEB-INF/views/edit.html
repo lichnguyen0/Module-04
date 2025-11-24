@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Sửa bài hát</title>
+</head>
+<body>
+
+<h2>CẬP NHẬT BÀI HÁT</h2>
+
+<form th:action="@{/songs/update}" method="post" enctype="multipart/form-data">
+
+  <input type="hidden" name="id" th:value="${song.id}">
+
+  <p>
+    Tên bài hát:
+    <input type="text" name="name" th:value="${song.name}" required>
+  </p>
+
+  <p>
+    Nghệ sĩ:
+    <input type="text" name="artist" th:value="${song.artist}" required>
+  </p>
+
+  <p>
+    Thể loại:
+    <input type="text" name="genre" th:value="${song.genre}" required>
+  </p>
+
+  <p>
+    File nhạc mới:
+    <input type="file" name="file" accept="audio/*,video/webm,audio/webm,.webm">
+    <br><small>File hiện tại: <span th:text="${song.filePath}"></span></small>
+  </p>
+
+  <div th:if="${error}" style="color: red; margin: 10px 0;">
+    <strong>Lỗi:</strong> <span th:text="${error}"></span>
+  </div>
+
+  <button type="submit">Cập nhật</button>
+  <a th:href="@{/songs}">Quay lại</a>
+
+</form>
+
+</body>
+</html>

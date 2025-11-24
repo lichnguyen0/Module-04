@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm bài hát</title>
+</head>
+<body>
+
+<h2>THÊM BÀI HÁT MỚI</h2>
+
+<form action="/songs/save" method="post" enctype="multipart/form-data">
+
+  <p>
+    Tên bài hát:
+    <input type="text" name="name" th:value="${name}" required>
+  </p>
+
+  <p>
+    Nghệ sĩ:
+    <input type="text" name="artist" th:value="${artist}" required>
+  </p>
+
+  <p>
+    Thể loại:
+    <input type="text" name="genre" th:value="${genre}" required>
+  </p>
+
+  <p>
+    File nhạc:
+    <input type="file" name="file" accept="audio/*,video/webm,audio/webm,.webm" required>
+    <br><small>Hỗ trợ: MP3, WEBM, WAV, OGG (tối đa 100MB)</small>
+  </p>
+
+  <!-- Hiển thị lỗi -->
+  <div th:if="${error}" style="color: red; margin: 10px 0;">
+    <strong>Lỗi:</strong> <span th:text="${error}"></span>
+  </div>
+
+  <button type="submit">Lưu</button>
+  <a href="/songs">Quay lại</a>
+
+</form>
+
+</body>
+</html>

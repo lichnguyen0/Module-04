@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách bài hát</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .action-buttons {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+    .btn-info {
+      background: #17a2b8;
+      color: white;
+    }
+    .btn-info:hover {
+      background: #138496;
+      transform: translateY(-2px);
+    }
+    .btn-warning {
+      background: #ffc107;
+      color: #212529;
+    }
+    .btn-warning:hover {
+      background: #e0a800;
+      transform: translateY(-2px);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th {
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+    tr:hover {
+      background: #f8f9fa;
+    }
+    .action-links a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-radius: 3px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    .play-link {
+      background: #28a745;
+      color: white;
+    }
+    .play-link:hover {
+      background: #218838;
+    }
+    .edit-link {
+      background: #ffc107;
+      color: #212529;
+    }
+    .edit-link:hover {
+      background: #e0a800;
+    }
+    .delete-link {
+      background: #dc3545;
+      color: white;
+    }
+    .delete-link:hover {
+      background: #c82333;
+    }
+    .empty-message {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+      font-style: italic;
+    }
+    .stats {
+      background: #e9ecef;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      border: 1px solid #c3e6cb;
+    }
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      border: 1px solid #f5c6cb;
+    }
+    .cleanup-info {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      border: 1px solid #ffeaa7;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🎵 DANH SÁCH BÀI HÁT</h2>
+
+  <!-- THÔNG BÁO SUCCESS/ERROR -->
+  <div th:if="${param.success}" class="success-message">
+    ✅ Thao tác thành công!
+  </div>
+
+  <div th:if="${param.error}" class="error-message">
+    ❌ Lỗi: <span th:text="${param.error}"></span>
+  </div>
+
+  <div th:if="${param.cleanup}" class="cleanup-info">
+    🗑️ Đã xóa <span th:text="${param.cleanup}"></span> file không sử dụng
+  </div>
+
+  <div th:if="${param.cleanup_error}" class="error-message">
+    ❌ Lỗi dọn dẹp: <span th:text="${param.cleanup_error}"></span>
+  </div>
+
+  <!-- THỐNG KÊ -->
+  <div class="stats">
+    📊 Tổng số bài hát: <span th:text="${songs.size()}"></span> bài
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="action-buttons">
+    <a th:href="@{/songs/create}" class="btn btn-primary">+ Thêm bài hát mới</a>
+
+    <a th:href="@{/songs/play/__${songs[0].id}__}"
+       th:if="${not songs.empty}"
+       class="btn btn-success">
+      🎵 Nghe tất cả (từ bài đầu)
+    </a>
+
+    <a th:href="@{/songs/cleanup}"
+       class="btn btn-warning"
+       onclick="return confirm('Bạn có chắc muốn dọn dẹp các file không sử dụng?')">
+      🗑️ Dọn dẹp file
+    </a>
+
+    <a th:href="@{/}" class="btn btn-info">🏠 Trang chủ</a>
+  </div>
+
+  <!-- DANH SÁCH BÀI HÁT -->
+  <table>
+    <thead>
+    <tr>
+      <th width="5%">#</th>
+      <th width="25%">Tên bài hát</th>
+      <th width="20%">Nghệ sĩ</th>
+      <th width="15%">Thể loại</th>
+      <th width="20%">File</th>
+      <th width="15%">Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${songs.empty}">
+      <td colspan="6" class="empty-message">
+        📭 Chưa có bài hát nào.
+        <a th:href="@{/songs/create}">Thêm bài hát đầu tiên</a>
+      </td>
+    </tr>
+
+    <tr th:each="song, status : ${songs}">
+      <td th:text="${status.count}">1</td>
+      <td>
+        <strong th:text="${song.name}"></strong>
+      </td>
+      <td th:text="${song.artist}"></td>
+      <td th:text="${song.genre}"></td>
+      <td>
+        <small style="color: #666;" th:text="${song.filePath}"></small>
+      </td>
+      <td class="action-links">
+        <a th:href="@{'/songs/play/' + ${song.id}}" class="play-link" title="Nghe nhạc">
+          🎧 Nghe
+        </a>
+        <a th:href="@{'/songs/edit/' + ${song.id}}" class="edit-link" title="Sửa thông tin">
+          ✏️ Sửa
+        </a>
+        <a th:href="@{'/songs/delete/' + ${song.id}}"
+           class="delete-link"
+           title="Xóa bài hát"
+           onclick="return confirm('Bạn chắc chắn muốn xoá bài hát \'' + [[$,{song:name}]] + '\'?')">
+          🗑️ Xóa
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- HƯỚNG DẪN SỬ DỤNG -->
+  <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+    <h4>🎯 Hướng dẫn sử dụng:</h4>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+      <li><strong>🎧 Nghe:</strong> Nghe bài hát với tính năng auto-play bài tiếp theo</li>
+      <li><strong>✏️ Sửa:</strong> Cập nhật thông tin bài hát</li>
+      <li><strong>🗑️ Xóa:</strong> Xóa bài hát và file nhạc</li>
+      <li><strong>🎵 Nghe tất cả:</strong> Phát toàn bộ playlist từ bài đầu tiên</li>
+      <li><strong>🗑️ Dọn dẹp:</strong> Xóa các file nhạc không còn sử dụng</li>
+    </ul>
+  </div>
+
+  <!-- THÔNG TIN PLAYER -->
+  <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 5px;">
+    <h4>🎹 Tính năng player:</h4>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+      <li>✅ <strong>Tự động phát bài tiếp theo</strong> khi kết thúc</li>
+      <li>✅ <strong>Phím tắt:</strong> Space (play/pause), ←→ (chuyển bài), R (replay)</li>
+      <li>✅ <strong>Playlist navigation:</strong> Điều hướng dễ dàng giữa các bài</li>
+      <li>✅ <strong>Download:</strong> Tải file gốc khi đang nghe</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // XÓA THÔNG BÁO TỰ ĐỘNG SAU 5 GIÂY
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      const messages = document.querySelectorAll('.success-message, .error-message, .cleanup-info');
+      messages.forEach(function(message) {
+        message.style.opacity = '0';
+        message.style.transition = 'opacity 0.5s ease';
+        setTimeout(function() {
+          if (message.parentNode) {
+            message.parentNode.removeChild(message);
+          }
+        }, 500);
+      });
+    }, 5000);
+  });
+
+  // THÊM PHÍM TẮT TRÊN TRANG LIST
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'n' || event.key === 'N') {
+      // Phím N: Thêm bài hát mới
+      event.preventDefault();
+      const addBtn = document.querySelector('a[href*="/songs/create"]');
+      if (addBtn) addBtn.click();
+    } else if (event.key === 'h' || event.key === 'H') {
+      // Phím H: Về trang chủ
+      event.preventDefault();
+      const homeBtn = document.querySelector('a[href*="/"]');
+      if (homeBtn) homeBtn.click();
+    } else if (event.key === 'p' || event.key === 'P' && !event.target.tagName === 'INPUT') {
+      // Phím P: Play bài đầu tiên
+      event.preventDefault();
+      const playBtn = document.querySelector('a[href*="/songs/play/"]');
+      if (playBtn) playBtn.click();
+    }
+  });
+
+  // HIỆN THÔNG BÁO PHÍM TẮT
+  console.log('🎹 Phím tắt trên trang list: N (Thêm mới), H (Trang chủ), P (Play)');
+</script>
+
+</body>
+</html>

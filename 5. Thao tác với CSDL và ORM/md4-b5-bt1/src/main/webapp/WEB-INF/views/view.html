@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nghe nhạc</title>
+    <style>
+        .audio-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .file-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .btn-download {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-download:hover {
+            background: #218838;
+        }
+        .playlist-info {
+            background: #d1ecf1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .nav-buttons {
+            margin: 15px 0;
+        }
+        .nav-buttons a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .nav-buttons a:hover {
+            background: #0056b3;
+        }
+        .nav-buttons a.disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .keyboard-shortcuts {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .auto-play-toggle {
+            background: #e7f3ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #b3d9ff;
+        }
+    </style>
+</head>
+<body>
+
+<h2 th:text="${song.name}"></h2>
+
+<!-- THÔNG TIN PLAYLIST -->
+<div class="playlist-info">
+    <p>
+        <strong>Playlist:</strong>
+        Bài <span th:text="${currentIndex}"></span> / <span th:text="${totalSongs}"></span>
+        <span th:if="${nextSongId}"> | <strong>✅ Tự động phát bài tiếp theo</strong></span>
+        <span th:unless="${nextSongId}"> | <strong>⏹️ Bài cuối cùng</strong></span>
+    </p>
+</div>
+
+<!-- TOGGLE AUTO PLAY -->
+<div class="auto-play-toggle">
+    <label>
+        <input type="checkbox" id="autoPlayToggle" checked>
+        <strong>Tự động phát bài tiếp theo</strong>
+    </label>
+</div>
+
+<div class="file-info">
+    <p><strong>Nghệ sĩ:</strong> <span th:text="${song.artist}"></span></p>
+    <p><strong>Thể loại:</strong> <span th:text="${song.genre}"></span></p>
+    <p><strong>File:</strong> <span th:text="${song.filePath}"></span></p>
+    <p><strong>Định dạng:</strong> <span th:text="${fileType}"></span></p>
+</div>
+
+<!-- NAVIGATION BUTTONS -->
+<div class="nav-buttons">
+    <a th:href="@{'/songs/prev/' + ${song.id}}">⏮️ Bài trước</a>
+    <a th:if="${nextSongId}" th:href="@{'/songs/next/' + ${song.id}}">⏭️ Bài tiếp theo</a>
+    <a th:unless="${nextSongId}" class="disabled">⏭️ Bài tiếp theo</a>
+</div>
+
+<div class="audio-container">
+    <h3>NGHE NHẠC</h3>
+    <!-- 🆕 THÊM autoplay attribute -->
+    <audio id="audioPlayer" controls
+           th:attr="autoplay=${autoplay} ? 'autoplay' : null"
+           style="width: 100%; max-width: 600px;">
+        <source th:src="@{'/uploads/' + ${song.filePath}}" th:type="${fileType}">
+        <source th:src="@{'/uploads/' + ${song.filePath}}" type="audio/webm">
+        <source th:src="@{'/uploads/' + ${song.filePath}}" type="audio/mpeg">
+        <source th:src="@{'/uploads/' + ${song.filePath}}" type="audio/wav">
+        <p>Trình duyệt của bạn không hỗ trợ định dạng audio này.
+            <a th:href="@{'/uploads/' + ${song.filePath}}" download>Tải file về</a>
+        </p>
+    </audio>
+
+    <!-- DOWNLOAD LINK -->
+    <p style="margin-top: 10px;">
+        <a th:href="@{'/uploads/' + ${song.filePath}}" download class="btn-download">
+            📥 Tải file gốc
+        </a>
+    </p>
+</div>
+
+<!-- THÔNG BÁO PHÍM TẮT -->
+<div class="keyboard-shortcuts">
+    <small>
+        <strong>🎹 Phím tắt:</strong>
+        <kbd>Space</kbd> (Play/Pause) •
+        <kbd>←</kbd> (Bài trước) •
+        <kbd>→</kbd> (Bài tiếp theo) •
+        <kbd>R</kbd> (Replay) •
+        <kbd>A</kbd> (Toggle Auto-play)
+    </small>
+</div>
+
+<!-- JAVASCRIPT AUTO PLAY NEXT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const audioPlayer = document.getElementById('audioPlayer');
+        const autoPlayToggle = document.getElementById('autoPlayToggle');
+        const nextSongId = [[$,{nextSongId}]];
+
+        // 🆕 LẤY TRẠNG THÁI AUTO-PLAY TỪ LOCALSTORAGE
+        const savedAutoPlay = localStorage.getItem('autoPlayEnabled');
+        if (savedAutoPlay !== null) {
+            autoPlayToggle.checked = savedAutoPlay === 'true';
+        }
+
+        // 🆕 TỰ ĐỘNG PLAY KHI TRANG LOAD
+        audioPlayer.play().catch(function(error) {
+            console.log('Auto-play bị chặn:', error);
+            // Hiện thông báo yêu cầu user tương tác
+            showNotification('🔇 Click vào player để bắt đầu phát nhạc', 'warning');
+        });
+
+        // 🆕 LƯU TRẠNG THÁI AUTO-PLAY
+        autoPlayToggle.addEventListener('change', function() {
+            localStorage.setItem('autoPlayEnabled', this.checked);
+            showNotification(this.checked ? '✅ Bật auto-play' : '❌ Tắt auto-play', 'info');
+        });
+
+        // TỰ ĐỘNG CHUYỂN BÀI KHI KẾT THÚC (CHỈ KHI AUTO-PLAY BẬT)
+        audioPlayer.addEventListener('ended', function() {
+            if (autoPlayToggle.checked && nextSongId) {
+                console.log('Bài hát kết thúc, chuyển sang bài tiếp theo...');
+
+                // HIỆN THÔNG BÁO
+                showNotification('🔄 Đang chuyển sang bài tiếp theo...', 'info');
+
+                // 🆕 CHUYỂN TRANG VÀ GIỮ AUTO-PLAY
+                setTimeout(function() {
+                    window.location.href = '/songs/next/' + [[$,{song:id}]];
+                }, 1500);
+            }
+        });
+
+        // PHÍM TẮT
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' && nextSongId) {
+                // Phím → : Chuyển bài tiếp theo
+                event.preventDefault();
+                window.location.href = '/songs/next/' + [[$,{song:id}]];
+            } else if (event.key === 'ArrowLeft') {
+                // Phím ← : Chuyển bài trước
+                event.preventDefault();
+                window.location.href = '/songs/prev/' + [[$,{song:id}]];
+            } else if (event.key === ' ') {
+                // Phím Space: Play/Pause
+                event.preventDefault();
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    showNotification('▶️ Đang phát', 'success');
+                } else {
+                    audioPlayer.pause();
+                    showNotification('⏸️ Tạm dừng', 'warning');
+                }
+            } else if (event.key === 'r' || event.key === 'R') {
+                // Phím R: Replay
+                event.preventDefault();
+                audioPlayer.currentTime = 0;
+                audioPlayer.play();
+                showNotification('🔁 Phát lại từ đầu', 'info');
+            } else if (event.key === 'a' || event.key === 'A') {
+                // Phím A: Toggle auto-play
+                event.preventDefault();
+                autoPlayToggle.checked = !autoPlayToggle.checked;
+                autoPlayToggle.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // 🆕 XỬ LÝ AUTOPLAY POLICY CỦA BROWSER
+        let userInteracted = false;
+
+        document.addEventListener('click', function() {
+            if (!userInteracted) {
+                userInteracted = true;
+                // Thử play lại khi user tương tác
+                if (audioPlayer.paused) {
+                    audioPlayer.play().catch(console.error);
+                }
+            }
+        });
+
+        audioPlayer.addEventListener('play', function() {
+            console.log('Bài hát bắt đầu phát');
+            showNotification('🎵 Đang phát: ' + [[$,{song:name}]], 'success', 3000);
+        });
+
+        // HÀM HIỆN THÔNG BÁO
+        function showNotification(message, type, duration = 3000) {
+            // Kiểm tra xem đã có notification chưa
+            const existingNotification = document.querySelector('.custom-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            const notification = document.createElement('div');
+            const bgColor = type === 'info' ? '#17a2b8' :
+                type === 'success' ? '#28a745' :
+                    type === 'warning' ? '#ffc107' : '#007bff';
+
+            notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${bgColor};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-weight: bold;
+            max-width: 300px;
+        `;
+            notification.className = 'custom-notification';
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+
+            // TỰ ĐỘNG XÓA SAU duration
+            setTimeout(function() {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, duration);
+        }
+
+        console.log('Auto-play next song enabled. Next song ID:', nextSongId);
+        console.log('Auto-play toggle:', autoPlayToggle.checked);
+    });
+
+
+    // 🆕 XỬ LÝ AUTOPLAY TỪ URL PARAMETER
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoPlayParam = urlParams.get('autoplay');
+
+    if (autoPlayParam === 'true') {
+        console.log('Auto-play from URL parameter');
+        // Đảm bảo audio bắt đầu phát
+        setTimeout(() => {
+            audioPlayer.play().catch(error => {
+                console.log('Auto-play bị chặn, cần user interaction:', error);
+                showNotification('🔇 Click vào player để tiếp tục phát nhạc', 'warning');
+            });
+        }, 500);
+    }
+</script>
+
+<br>
+<a th:href="@{/songs}">← Quay lại danh sách</a>
+
+</body>
+</html>
