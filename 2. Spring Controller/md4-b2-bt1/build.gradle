@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.gretty' version '4.1.0'
+}
+
+group = 'com.example'
+version = '1.0.0'
+sourceCompatibility = '21'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring MVC 6.x
+    implementation 'org.springframework:spring-webmvc:6.1.8'
+    implementation 'org.springframework:spring-context:6.1.8'
+    implementation 'org.springframework:spring-core:6.1.8'
+    implementation 'org.springframework:spring-beans:6.1.8'
+    implementation 'org.springframework:spring-web:6.1.8'
+
+    // Servlet API
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
+
+    // JSTL
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    // Logging
+    implementation 'commons-logging:commons-logging:1.2'
+}
+
+gretty {
+    contextPath = '/'
+    servletContainer = 'tomcat10'
+    httpPort = 8080
+    jvmArgs = ['-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog']
+}
