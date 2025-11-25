@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.gretty' version '4.1.0'
+}
+
+group = 'com.example'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring MVC 6.x (tương thích JDK 17)
+    implementation 'org.springframework:spring-webmvc:6.1.8'
+
+    // Servlet API
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
+
+    // JSTL
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+}
+
+gretty {
+    contextPath = '/'
+    servletContainer = 'tomcat10'
+    httpPort = 8080
+}
