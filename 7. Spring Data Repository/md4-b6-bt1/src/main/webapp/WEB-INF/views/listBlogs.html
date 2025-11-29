@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Danh sách Blog</h1>
+
+    <!-- Form tìm kiếm & filter category -->
+    <form class="row g-3 mb-3" method="get" th:action="@{/blogs}">
+        <div class="col-auto">
+            <input type="text" class="form-control" placeholder="Tìm theo tiêu đề" name="keyword"
+                   th:value="${keyword}">
+        </div>
+        <div class="col-auto">
+            <select class="form-select" name="categoryId">
+                <option value="">-- Chọn danh mục --</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                        th:selected="${categoryId == c.id}"></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-success" th:href="@{/blogs/create}">Tạo Blog Mới</a>
+        </div>
+    </form>
+
+    <!-- Bảng Blog -->
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{/blogs(page=${currentPage}, sortField='title', sortDir=${reverseSortDir}, keyword=${keyword}, categoryId=${categoryId})}">
+                    Tiêu đề
+                    <span th:text="${sortField == 'title' ? (sortDir=='asc'?'▲':'▼') : ''}"></span>
+                </a>
+            </th>
+            <th>Tóm tắt</th>
+            <th>Danh mục</th>
+            <th>
+                <a th:href="@{/blogs(page=${currentPage}, sortField='createdAt', sortDir=${reverseSortDir}, keyword=${keyword}, categoryId=${categoryId})}">
+                    Ngày tạo
+                    <span th:text="${sortField == 'createdAt' ? (sortDir=='asc'?'▲':'▼') : ''}"></span>
+                </a>
+            </th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="blog : ${blogPage.content}">
+            <td th:text="${blog.title}"></td>
+            <td th:text="${blog.summary}"></td>
+            <td th:text="${blog.category != null ? blog.category.name : ''}"></td>
+            <td th:text="${#temporals.format(blog.createdAt,'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <a th:href="@{/blogs/view(id=${blog.id})}" class="btn btn-info btn-sm">Xem</a>
+                <a th:href="@{/blogs/edit(id=${blog.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                <a th:href="@{/blogs/delete(id=${blog.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    <nav>
+        <ul class="pagination">
+            <!-- Previous -->
+            <li class="page-item" th:classappend="${blogPage.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/blogs(page=${currentPage > 0 ? currentPage - 1 : 0}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword}, categoryId=${categoryId})}">
+                    Previous
+                </a>
+            </li>
+
+            <!-- Các số trang -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, blogPage.totalPages-1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/blogs(page=${i}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword}, categoryId=${categoryId})}"
+                   th:text="${i + 1}"></a>
+            </li>
+
+            <!-- Next -->
+            <li class="page-item" th:classappend="${blogPage.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/blogs(page=${currentPage < blogPage.totalPages-1 ? currentPage + 1 : blogPage.totalPages-1}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword}, categoryId=${categoryId})}">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
