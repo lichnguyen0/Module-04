@@ -17,7 +17,7 @@
 </p>
 <div class="notify">
     <div th:if="${message}">
-        <span th:text="${message}"></span>
+        <span th:text="${message}" style="color: green; font-weight: bold;"></span>
     </div>
 </div>
 
@@ -35,11 +35,11 @@
     <tbody>
     <tr th:each="c,cStatus : ${customers}">
         <td th:text="${cStatus.count}"></td>
-        <td th:text="${c.getFirstName()}"></td>
-        <td th:text="${c.getLastName()}"></td>
-        <td th:text="${c.getProvince().getName()}"></td>
-        <td><a th:href="@{/customers/update/{id}(id=${c.getId()})}">update</a></td>
-        <td><a th:href="@{/customers/delete/{id}(id=${c.getId()})}">delete</a></td>
+        <td th:text="${c.firstName}"></td>
+        <td th:text="${c.lastName}"></td>
+        <td th:text="${c.province?.name} ?: 'Chưa chọn tỉnh'"></td>
+        <td><a th:href="@{/customers/update/{id}(id=${c.id})}">update</a></td>
+        <td><a th:href="@{/customers/delete/{id}(id=${c.id})}">delete</a></td>
     </tr>
     </tbody>
 </table>
