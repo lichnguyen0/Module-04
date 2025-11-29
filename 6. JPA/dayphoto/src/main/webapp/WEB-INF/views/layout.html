@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo of the Day</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+        h3 { color: #333; }
+        img { border-radius: 8px; margin: 10px 0; max-width: 500px; max-height: 500px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ccc; }
+        th, td { padding: 8px; text-align: center; }
+        th { background-color: #eee; }
+        form input[type=text], form input[type=number] { padding: 5px; margin-right: 5px; }
+        form input[type=submit] { padding: 5px 10px; background-color: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        form input[type=submit]:hover { background-color: #3367d6; }
+        footer { margin-top: 30px; text-align: center; color: #777; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<header th:fragment="header">
+    <h1>Bức ảnh của ngày</h1>
+    <hr>
+</header>
+
+<main th:fragment="content">
+    <!-- Nội dung sẽ include từ các view khác -->
+</main>
+
+<footer th:fragment="footer">
+    <hr>
+    <p>&copy; 2025 – Photo of the Day</p>
+</footer>
+</body>
+</html>
