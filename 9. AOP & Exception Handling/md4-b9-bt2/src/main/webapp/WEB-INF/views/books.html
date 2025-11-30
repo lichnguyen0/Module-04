@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Thư viện - Danh sách sách</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #F4F1EA; /* nền giấy cổ */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #6B4F3F; /* gỗ đậm */
+            color: #FFF;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #FFF8E7; /* bảng sách màu kem nhạt */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #D9C4A8;
+            color: #4A3F2B;
+        }
+        tr:nth-child(even) {
+            background-color: #FDF5E6;
+        }
+        tr:hover {
+            background-color: #F1E4D0;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #D97D54;
+            color: #FFF;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #C3643F;
+        }
+        .top-links {
+            margin-bottom: 15px;
+        }
+        .top-links a {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<header>Thư viện MD4</header>
+<main>
+    <h1>Danh sách sách</h1>
+    <div class="top-links">
+        <a th:href="@{/books}" class="button">Refresh</a>
+        <a th:href="@{/books/return}" class="button">Trả sách</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tiêu đề</th>
+            <th>Tác giả</th>
+            <th>Số lượng</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}">1</td>
+            <td th:text="${book.title}">Title</td>
+            <td th:text="${book.author}">Author</td>
+            <td th:text="${book.quantity}">3</td>
+            <td>
+                <a th:href="@{|/books/${book.id}|}" class="button">Chi tiết</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
