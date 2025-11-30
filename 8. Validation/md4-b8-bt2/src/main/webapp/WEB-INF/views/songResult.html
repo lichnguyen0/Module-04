@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng ký thành công</title>
+  <link rel="stylesheet" th:href="@{/static/css/style.css}">
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+<div class="form-container">
+  <h1>⚡ Thêm bài hát thành công!</h1>
+  <p>Bài hát đã được lưu vào hệ thống.</p>
+  <a th:href="@{/songs/add}">Quay lại form</a>
+</div>
+<script th:src="@{/static/js/matrix.js}"></script>
+</body>
+</html>

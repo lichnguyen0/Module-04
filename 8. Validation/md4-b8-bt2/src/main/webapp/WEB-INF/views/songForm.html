@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm bài hát</title>
+  <link rel="stylesheet" th:href="@{/static/css/style.css}">
+  <script th:src="@{/static/js/matrix.js}"></script>
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+<div class="form-container">
+  <h1>⚡ Thêm bài hát</h1>
+  <form th:action="@{/songs/add}" th:object="${song}" method="post">
+    <div>
+      <label>Tên bài hát</label>
+      <input type="text" th:field="*{title}">
+      <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    </div>
+    <div>
+      <label>Nghệ sĩ</label>
+      <input type="text" th:field="*{artist}">
+      <p th:if="${#fields.hasErrors('artist')}" th:errors="*{artist}"></p>
+    </div>
+    <div>
+      <label>Thể loại</label>
+      <input type="text" th:field="*{genre}">
+      <p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></p>
+    </div>
+    <button type="submit">Thêm bài hát</button>
+  </form>
+</div>
+</body>
+</html>

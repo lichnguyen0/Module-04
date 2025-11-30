@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng ký thành công</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    /* BODY + BACKGROUND DARKWEB */
+    body {
+      margin: 0;
+      font-family: 'Share Tech Mono', monospace;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: #0a0a0a;
+      color: #00ff99;
+    }
+
+    /* MATRIX-STYLE BACKGROUND */
+    .matrix-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .matrix-bg span {
+      position: absolute;
+      top: -100%;
+      font-size: 16px;
+      color: #00ff99;
+      opacity: 0.3;
+      animation: drop linear infinite;
+    }
+
+    @keyframes drop {
+      0% { top: -100%; }
+      100% { top: 110%; }
+    }
+
+    /* RESULT CONTAINER */
+    .result-container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 50px 60px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #00ff99, 0 0 60px #00ff99aa;
+      text-align: center;
+      width: 450px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .result-container h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #00ff99;
+      text-shadow: 0 0 5px #00ff99, 0 0 10px #00ff99aa;
+    }
+
+    .result-container p {
+      font-size: 16px;
+      color: #00ff99cc;
+      margin-bottom: 35px;
+      line-height: 1.6;
+    }
+
+    /* BUTTON BACK */
+    .back-button {
+      display: inline-block;
+      padding: 14px 28px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #0a0a0a;
+      background: #00ff99;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99aa;
+    }
+
+    .back-button:hover {
+      background: #00cc7a;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ff99, 0 0 25px #00ff99aa;
+    }
+
+    /* ANIMATION */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .result-container {
+        width: 90%;
+        padding: 40px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Matrix code background -->
+<div class="matrix-bg" id="matrix"></div>
+
+<div class="result-container">
+  <h1>⚡ Đăng ký thành công!</h1>
+  <p>Bạn đã đăng ký tài khoản thành công.<br/>Chúc bạn trải nghiệm tuyệt vời!</p>
+  <a th:href="@{/}" class="back-button">Quay lại form</a>
+</div>
+
+<script>
+  // MATRIX FALLING CODE EFFECT
+  const matrix = document.getElementById("matrix");
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+  for(let i=0; i<250; i++){
+    let span = document.createElement("span");
+    span.textContent = letters.charAt(Math.floor(Math.random()*letters.length));
+    span.style.left = Math.random()*100+"%";
+    span.style.animationDuration = (Math.random()*6 + 4) + "s";
+    span.style.fontSize = (Math.random()*14 + 12) + "px";
+    matrix.appendChild(span);
+  }
+</script>
+
+</body>
+</html>
