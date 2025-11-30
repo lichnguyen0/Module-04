@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+<header th:replace="layout :: header"></header>
+
+<section style="text-align:center; max-width:600px; margin:50px auto;">
+  <h2 style="color:#ff4b4b; text-shadow:0 0 8px #ff4b4b;">❌ Feedback Rejected!</h2>
+  <p th:text="${errorMessage}" style="color:#e0f7fa;"></p>
+  <a href="/photo">Back to Photo</a>
+</section>
+
+<footer th:replace="layout :: footer"></footer>
+</body>
+</html>

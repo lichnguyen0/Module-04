@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head"></head>
+<body>
+<header th:replace="layout :: header"></header>
+
+<!-- Photo of the Day -->
+<section style="text-align:center;">
+  <h3>🌌 Today's Space Photo</h3>
+  <img id="img-of-the-day" alt="Photo of the Day">
+</section>
+
+<script>
+  fetch('https://api.nasa.gov/planetary/apod?api_key=r4o7dnrcJqC9SQAWv17IV7eYGqoxfchZ7kjx7ynk')
+          .then(r => r.json())
+          .then(data => {
+            const img = document.getElementById('img-of-the-day');
+            img.src = data.media_type === "image" ? data.url : "https://apod.nasa.gov/apod/image/1901/IC405_Abolfath_3951.jpg";
+          }).catch(console.error);
+</script>
+
+<!-- Feedback Form -->
+<section>
+  <h3>Send Your Feedback</h3>
+  <form th:action="@{/photo/feedback}" method="POST" style="display:flex; flex-direction:column; gap:12px;">
+    <input type="text" name="author" placeholder="Author Name" required>
+    <textarea name="comment" placeholder="Your feedback" rows="4" required></textarea>
+    <label for="rating">Rating:</label>
+    <select name="rating" id="rating" required>
+      <option value="">--Select--</option>
+      <option value="1">1 ⭐</option>
+      <option value="2">2 ⭐⭐</option>
+      <option value="3">3 ⭐⭐⭐</option>
+      <option value="4">4 ⭐⭐⭐⭐</option>
+      <option value="5">5 ⭐⭐⭐⭐⭐</option>
+    </select>
+    <input type="submit" value="Send Feedback">
+  </form>
+</section>
+
+<!-- Feedback Table -->
+<section>
+  <h3>Today's Feedback</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Feedback</th>
+      <th>Rating</th>
+      <th>Likes</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="f : ${feedbacks}">
+      <td th:text="${f.author}"></td>
+      <td th:text="${f.comment}"></td>
+      <td th:text="${f.rating} + ' ⭐'"></td>
+      <td th:text="${f.likes}"></td>
+      <td>
+        <form th:action="@{/photo/like/{id}(id=${f.id})}" method="POST">
+          <button type="submit">❤️ Like</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <!-- Pagination -->
+  <div style="text-align:center; margin-top:20px;">
+        <span th:if="${currentPage > 0}">
+            <a th:href="@{/photo(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
+        </span>
+    <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+    <span th:if="${currentPage + 1 < totalPages}">
+            <a th:href="@{/photo(page=${currentPage + 1}, size=${pageSize})}">Next</a>
+        </span>
+  </div>
+</section>
+
+<footer th:replace="layout :: footer"></footer>
+</body>
+</html>
