@@ -12,7 +12,7 @@ public class VisitCounterAspect {
 
     private int count = 0;
 
-    @After("execution(* com.example.library.controller.*.*(..))")
+    @After("execution(* com.example.md4b9bt2.controller.*.*(..))")
     public void countVisitor() {
         count++;
         System.out.println("[VISIT] Total visits: " + count);

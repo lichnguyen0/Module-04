@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
-    @After("execution(* com.example.library.service.BorrowService.*(..))")
+    @After("execution(* com.example.md4b9bt2.service.BorrowService.*(..))")
     public void logAction(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         System.out.println("[BOOK LOG] " + joinPoint.getSignature().getName() +

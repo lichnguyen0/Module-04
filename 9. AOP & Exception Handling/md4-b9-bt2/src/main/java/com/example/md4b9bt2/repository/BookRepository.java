@@ -15,9 +15,12 @@ public class BookRepository {
 
     @PostConstruct
     public void init() {
-        books.put(1L, new Book(1L, "Java Core", "Nguyen Van A", 3));
+        books.put(1L, new Book(1L, "Java Core", "Lâm Quỳnh Phương", 5));
         books.put(2L, new Book(2L, "Spring in Action", "Craig Walls", 2));
         books.put(3L, new Book(3L, "Clean Code", "Robert C. Martin", 1));
+        books.put(4L, new Book(4L, "Basic Java", "Lưu Thị Tố Nhuận", 3));
+        books.put(5L, new Book(5L, "Introduction to Java Programming của Daniel Liang", "Thạch Thị Gấm Xinh", 5));
+
     }
 
     public List<Book> findAll() {
