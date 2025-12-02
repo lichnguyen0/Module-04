@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name}">Chi tiết sản phẩm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        .product-detail {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .product-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .product-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .product-content {
+            padding: 40px;
+        }
+
+        .promotion-section {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .promotion-section h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .promotion-list {
+            list-style-type: none;
+        }
+
+        .promotion-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .promotion-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .price-details {
+            flex: 1;
+        }
+
+        .price-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #555;
+            min-width: 100px;
+        }
+
+        .product-code {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            background-color: #e8f4fc;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .old-price {
+            font-size: 1.3rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+        }
+
+        .new-price {
+            font-size: 2rem;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 200px;
+        }
+
+        .btn-buy {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy:hover {
+            background: linear-gradient(to right, #c0392b, #a93226);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-cart {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cart:hover {
+            background: linear-gradient(to right, #2980b9, #1f6396);
+            transform: scale(1.05);
+        }
+
+        .product-description {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .product-description h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .price-info {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .product-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="back-nav">
+        <a href="/shop" class="btn-back">← Quay lại danh sách</a>
+    </div>
+
+    <div class="product-detail">
+        <div class="product-header">
+            <h1 th:text="${product.name}">SẢN PHẨM 1</h1>
+        </div>
+
+        <div class="product-content">
+            <div class="promotion-section">
+                <h3>🎁 ƯU ĐÃI ĐẶC BIỆT</h3>
+                <div th:utext="${product.promotion}">
+                    <ul class="promotion-list">
+                        <li>Tặng banner, thiệp (trị giá 20.000đ) miễn phí</li>
+                        <li>Giảm ngay 20.000đ khi Bạn tạo đơn hàng online</li>
+                        <li>Giảm tiếp 3% cho đơn hàng Bạn tạo ONLINE lần thứ 2, 5% đơn hàng Bạn tạo ONLINE lần thứ 6 và 10% cho đơn hàng Bạn tạo ONLINE lần thứ 12 (Chỉ áp dụng tại Tp. HCM)</li>
+                        <li>Giao miễn phí trong nội thành 63/63 tỉnh</li>
+                        <li>Giao gấp trong vòng 2 giờ</li>
+                        <li>Cam kết 100% hoàn lại tiền nếu Bạn không hài lòng</li>
+                        <li>Cam kết hoa tươi trên 3 ngày</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="price-info">
+                <div class="price-details">
+                    <div class="price-item">
+                        <span class="label">Mã SP:</span>
+                        <span class="product-code" th:text="${product.code}">4564</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="label">Giá cũ:</span>
+                        <span class="old-price" th:text="${#numbers.formatDecimal(product.oldPrice,0,0)} + ' đ'">400.000 đ</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="label">Giá mới:</span>
+                        <span class="new-price" th:text="${#numbers.formatDecimal(product.price,0,0)} + ' đ'">350.000 đ</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a th:href="@{/add/__${product.id}__(action='show')}" class="btn-buy">
+                        🛒 MUA NGAY
+                    </a>
+                    <a th:href="@{/add/__${product.id}__(action='list')}" class="btn-cart">
+                        ＋ Thêm vào giỏ hàng
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-description">
+                <h3>📝 Mô tả sản phẩm</h3>
+                <p th:text="${product.description}">Sản phẩm cao cấp với chất lượng tốt nhất, đảm bảo sự hài lòng cho khách hàng.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

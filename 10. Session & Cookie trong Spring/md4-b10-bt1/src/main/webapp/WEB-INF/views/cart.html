@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .cart-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cart-title h1 {
+      font-size: 2rem;
+    }
+
+    .cart-count {
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .navigation {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: white;
+      color: #2575fc;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #2575fc;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .cart-items {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+
+    .cart-empty-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s ease;
+    }
+
+    .cart-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #f3f3f3, #e0e0e0);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .item-details h3 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+
+    .item-code {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      background-color: #f8f9fa;
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-input {
+      width: 70px;
+      padding: 8px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .quantity-input:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    .btn-update {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-update:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    .btn-remove {
+      background-color: transparent;
+      color: #e74c3c;
+      border: 2px solid #e74c3c;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-remove:hover {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .item-price {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .item-total {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #e74c3c;
+      text-align: center;
+    }
+
+    .cart-summary {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .summary-total {
+      font-size: 1.8rem;
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .summary-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-checkout {
+      background: linear-gradient(to right, #2ecc71, #27ae60);
+      color: white;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-checkout:hover {
+      background: linear-gradient(to right, #27ae60, #219653);
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-continue {
+      background: linear-gradient(to right, #3498db, #2980b9);
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-continue:hover {
+      background: linear-gradient(to right, #2980b9, #1f6396);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .cart-item {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .item-info {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .cart-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .summary-actions {
+        flex-direction: column;
+      }
+
+      .btn-checkout, .btn-continue {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="cart-header">
+    <div class="cart-title">
+      <h1>🛒 GIỎ HÀNG</h1>
+      <span class="cart-count" th:text="'(' + ${cart.countItemQuantity()} + ')'">(0)</span>
+    </div>
+    <div class="navigation">
+      <a href="/shop" class="nav-btn">← Tiếp tục mua sắm</a>
+    </div>
+  </div>
+
+  <div class="cart-items">
+    <div th:if="${cart.products.empty}" class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <h2>Giỏ hàng của bạn đang trống</h2>
+      <p>Hãy thêm sản phẩm để bắt đầu mua sắm!</p>
+      <a href="/shop" class="btn-continue" style="margin-top: 20px;">Mua sắm ngay</a>
+    </div>
+
+    <div th:each="item : ${cart.products}" class="cart-item">
+      <div class="item-info">
+        <div class="item-image">🎁</div>
+        <div class="item-details">
+          <h3 th:text="${item.getKey().name}">Sản phẩm 1</h3>
+          <div class="item-code">Mã SP: <span th:text="${item.getKey().code}">4564</span></div>
+          <div class="item-price" th:text="${#numbers.formatDecimal(item.getKey().price,0,0)} + ' đ'">350.000 đ</div>
+        </div>
+      </div>
+
+      <div class="quantity-control">
+        <form th:action="@{/update-cart}" method="post" class="quantity-form">
+          <input type="hidden" th:name="productId" th:value="${item.getKey().id}" />
+          <input type="number" name="quantity" min="1" th:value="${item.getValue()}"
+                 class="quantity-input" onchange="this.form.submit()" />
+          <button type="submit" class="btn-update">Cập nhật</button>
+        </form>
+        <form th:action="@{/remove-from-cart}" method="post" style="display: inline;">
+          <input type="hidden" name="productId" th:value="${item.getKey().id}" />
+          <button type="submit" class="btn-remove">Xóa</button>
+        </form>
+      </div>
+
+      <div class="item-price" th:text="${#numbers.formatDecimal(item.getKey().price,0,0)} + ' đ'">350.000 đ</div>
+      <div class="item-total" th:text="${#numbers.formatDecimal(item.getKey().price * item.getValue(),0,0)} + ' đ'">700.000 đ</div>
+    </div>
+  </div>
+
+  <div th:if="${!cart.products.empty}" class="cart-summary">
+    <div class="summary-header">
+      <h2>TỔNG CỘNG</h2>
+      <div class="summary-total" th:text="${#numbers.formatDecimal(cart.countTotalPayment(),0,0)} + ' đ'">1.480.000 đ</div>
+    </div>
+
+    <div class="summary-actions">
+      <a href="/shop" class="btn-continue">← Tiếp tục mua sắm</a>
+      <a href="/checkout" class="btn-checkout">THANH TOÁN →</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
