@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Danh sách Blog</h1>
+
+    <!-- Form tìm kiếm -->
+    <div class="row g-3 mb-3">
+        <div class="col-auto">
+            <input type="text" id="searchKeyword" class="form-control" placeholder="Tìm theo tiêu đề">
+        </div>
+        <div class="col-auto">
+            <button id="btnSearch" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-success" th:href="@{/blogs/create}">Tạo Blog Mới</a>
+        </div>
+    </div>
+
+    <!-- Danh sách blog -->
+    <div id="blogList">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Tóm tắt</th>
+                <th>Danh mục</th>
+                <th>Ngày tạo</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody id="blogTableBody">
+            <!-- Nội dung AJAX load -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Nút tải thêm -->
+    <div class="text-center mb-5">
+        <button id="btnLoadMore" class="btn btn-info">Tải thêm</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let offset = 0;
+    const limit = 20;
+
+    function renderBlogs(blogs, clear = false) {
+        if (clear) $('#blogTableBody').empty();
+        blogs.forEach(blog => {
+            let categoryName = blog.category ? blog.category.name : '';
+            let row = `<tr>
+                <td>${blog.title}</td>
+                <td>${blog.summary}</td>
+                <td>${categoryName}</td>
+                <td>${new Date(blog.createdAt).toLocaleString()}</td>
+                <td>
+                    <a href="/blogs/view?id=${blog.id}" class="btn btn-info btn-sm">Xem</a>
+                    <a href="/blogs/edit?id=${blog.id}" class="btn btn-warning btn-sm">Sửa</a>
+                    <a href="/blogs/delete?id=${blog.id}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                </td>
+            </tr>`;
+            $('#blogTableBody').append(row);
+        });
+    }
+
+    function loadBlogs(clear = false) {
+        $.getJSON(`/api/blogs/load?offset=${offset}&limit=${limit}`, function (data) {
+            renderBlogs(data, clear);
+            offset += data.length;
+            if (data.length < limit) $('#btnLoadMore').hide();
+        });
+    }
+
+    $(document).ready(function () {
+        loadBlogs(); // Load ban đầu
+
+        // Search
+        $('#btnSearch').click(function () {
+            const keyword = $('#searchKeyword').val().trim();
+            if (keyword.length === 0) return;
+            $.getJSON(`/api/blogs/search?keyword=${keyword}`, function (data) {
+                offset = data.length; // cập nhật offset cho tải thêm
+                renderBlogs(data, true); // xóa và hiển thị kết quả
+                $('#btnLoadMore').hide(); // ẩn nút tải thêm khi search
+            });
+        });
+
+        // Load more
+        $('#btnLoadMore').click(function () {
+            loadBlogs();
+        });
+    });
+</script>
+</body>
+</html>
