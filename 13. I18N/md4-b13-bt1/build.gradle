@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.10.2'
+}
+
+java {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-parameters'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// THÊM ĐOẠN NÀY ĐỂ XỬ LÝ RESOURCE FILES
+processResources {
+    filteringCharset = 'UTF-8'
+    filesMatching('**/*.properties') {
+        filter {
+            it.replace('\uFEFF', '') // Remove BOM nếu có
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+    implementation "org.springframework:spring-webmvc:6.2.6"
+    implementation "org.thymeleaf:thymeleaf-spring6:3.1.1.RELEASE"
+    implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0"
+
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+war {
+    archiveFileName = "${project.name}.war"
+}
