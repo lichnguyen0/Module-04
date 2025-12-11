@@ -3,14 +3,19 @@ package cg.wbd.grandemonstration.model;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "Customers")
 public class Customer implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
     private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    private Province province;
 
     public Customer() {
     }
@@ -60,6 +65,14 @@ public class Customer implements Cloneable {
         this.address = address;
     }
 
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
+    }
+
     @Override
     public Customer clone() {
         Customer customer = new Customer();
@@ -67,6 +80,7 @@ public class Customer implements Cloneable {
         customer.setName(name);
         customer.setEmail(email);
         customer.setAddress(address);
+        customer.setProvince(province);
         return customer;
     }
 
@@ -77,6 +91,7 @@ public class Customer implements Cloneable {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
+                ", province=" + province +
                 '}';
     }
 }
